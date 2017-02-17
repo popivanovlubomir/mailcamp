@@ -19,6 +19,7 @@
         </div>
         <input type="submit" value="Submit">
         {{ csrf_field() }}
+        @include('includes.errors')
     </form>
     <a href="{{ route('listcampaigns') }}">Campaign list</a>
 @endsection

@@ -2,24 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use League\Flysystem\Exception;
-use SendGrid;
 
-
-class CampaignsController extends ApiController
+class ContactsListsController extends ApiController
 {
     /**
-     * Display a listing of the campaigns.
+     * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $campaigns = $this->getAllCampaigns();
+        $contacts_lists = $this->getContactsLists();
 
-        return view('campaigns.index', compact('campaigns'));
+        return view('contactslists.index', compact('contacts_lists'));
     }
 
     /**
@@ -29,12 +27,11 @@ class CampaignsController extends ApiController
      */
     public function create()
     {
-        //
-        return view('campaigns.create');
+        return view('contactslists.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Save contact list
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -42,13 +39,13 @@ class CampaignsController extends ApiController
     public function store(Request $request)
     {
         $data = $request->except('_token');
-        $response = $this->storeCampaign($data);
-        if(isset($response['errors'])) {
-            return Redirect::to('/campaigns/create')->withErrors($response['errors'])->withInput();
-        } else {
-            return Redirect::to('/campaigns');
-        }
+        $response = $this->storeContactsList($data);
 
+        if(isset($response['errors'])) {
+            return Redirect::to('/contactslist/create')->withErrors($response['errors'])->withInput();
+        } else {
+            return Redirect::to('/contactslist');
+        }
     }
 
     /**
@@ -59,10 +56,7 @@ class CampaignsController extends ApiController
      */
     public function show($id)
     {
-        $campaign_data = $this->getSingleCampaign($id);
-        $sheduled_data = $this->getSheduledTimeCampaign($id);
-
-        return view('campaigns.view', compact('campaign_data', 'sheduled_data'));
+        //
     }
 
     /**

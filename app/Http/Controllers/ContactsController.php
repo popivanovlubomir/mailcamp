@@ -4,22 +4,31 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use League\Flysystem\Exception;
-use SendGrid;
 
-
-class CampaignsController extends ApiController
+class ContactsController extends ApiController
 {
+    public function __construct(Request $request_obj)
+    {
+        parent::__construct();
+
+        //share the list_id with all views
+        view()->share('list_id', $request_obj->list_id);
+    }
+
     /**
-     * Display a listing of the campaigns.
+     * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($list_id)
     {
-        $campaigns = $this->getAllCampaigns();
+        $response = $this->getContactsForList($list_id);
 
-        return view('campaigns.index', compact('campaigns'));
+        if(isset($response['errors'])) {
+            return Redirect::to('/contactslist')->withErrors($response['errors'])->withInput();
+        } else {
+            return view('contacts.index', compact('contacts'))->with('contacts', $response);
+        }
     }
 
     /**
@@ -30,7 +39,7 @@ class CampaignsController extends ApiController
     public function create()
     {
         //
-        return view('campaigns.create');
+        return view('contacts.create');
     }
 
     /**
@@ -41,14 +50,29 @@ class CampaignsController extends ApiController
      */
     public function store(Request $request)
     {
-        $data = $request->except('_token');
-        $response = $this->storeCampaign($data);
-        if(isset($response['errors'])) {
-            return Redirect::to('/campaigns/create')->withErrors($response['errors'])->withInput();
-        } else {
-            return Redirect::to('/campaigns');
-        }
+        $request_data = $response = $list_response = [];
 
+        $request_data[] = $request->except('_token', 'list_id');
+        $list_id = $request->get('list_id');
+
+        //store the contact as persistant
+        $response = $this->storeContacts($request_data);
+
+        if(isset($response['errors'])) {
+            return back()->withErrors($response['errors'])->withInput();
+        } else {
+            // no errors so do the association to list
+            // if list id is submitted
+            if($list_id && !empty($response)) {
+                //do the associations
+                $this->associateContactsToList($list_id, $response);
+
+                return redirect()->route('viewcontacts', ['list_id' => $list_id]);
+            } else {
+                return back();
+            }
+
+        }
     }
 
     /**
@@ -59,10 +83,7 @@ class CampaignsController extends ApiController
      */
     public function show($id)
     {
-        $campaign_data = $this->getSingleCampaign($id);
-        $sheduled_data = $this->getSheduledTimeCampaign($id);
-
-        return view('campaigns.view', compact('campaign_data', 'sheduled_data'));
+        //
     }
 
     /**

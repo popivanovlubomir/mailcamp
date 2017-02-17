@@ -13,11 +13,4 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public $sendGridObj;
-
-    public function __construct()
-    {
-        $apiKey = getenv('SENDGRID_API_KEY');
-        $this->sendGridObj = new SendGrid($apiKey);
-    }
 }

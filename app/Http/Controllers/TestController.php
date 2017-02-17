@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use SendGrid;
 
-class TestController extends Controller
+class TestController extends ApiController
 {
     /**
      * Display a listing of the resource.
