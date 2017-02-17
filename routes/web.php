@@ -11,6 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'CampaignsController@index');
+
+Route::get('/campaigns', 'CampaignsController@index')->name('listcampaigns');
+Route::get('/campaigns/create', 'CampaignsController@create')->name('createcampaign');
+Route::get('/campaigns/view/{id}', 'CampaignsController@show')->name('viewcampaign');
+Route::post('/campaigns/store', 'CampaignsController@store')->name('savecampaign');
+
+Route::get('/test', 'TestController@index');
