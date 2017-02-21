@@ -5,17 +5,18 @@
     </head>
     <body>
         <div class="container">
+            @include('includes.toppage')
             <div class="header clearfix">
                 @include('includes.navigation')
             </div>
             {{--<div class="jumbotron">--}}
                 {{--@include('includes.toppage')--}}
             {{--</div>--}}
-            <div class="container theme-showcase" role="main">
+            <div class="container theme-showcase panel panel-default" role="main">
                 <div class="page-header">
 
                 </div>
-                <div class="jumbotron">
+                <div class="panel-body">
                     @yield('content')
                 </div>
                 @include('includes.footer')

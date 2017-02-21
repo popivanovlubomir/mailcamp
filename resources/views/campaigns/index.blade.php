@@ -21,4 +21,5 @@
     </table>
 
     <a href="{{ route('createcampaign') }}" class="btn btn-lg btn-success" role="button">Add Campaign</a>
+    <a href="{{ route('sendemailview') }}" class="btn btn-lg btn-success" role="button">Send Email</a>
 @endsection

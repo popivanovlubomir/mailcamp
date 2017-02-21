@@ -1,2 +1,5 @@
-<h1>MailCamp</h1>
-<p class="lead">Text text text.</p>
+@if (session('status'))
+    <div class="alert alert-success">
+        {{ session('status') }}
+    </div>
+@endif

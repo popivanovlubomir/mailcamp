@@ -17,6 +17,8 @@ Route::get('/', 'CampaignsController@index');
 Route::get('/campaigns', 'CampaignsController@index')->name('listcampaigns');
 Route::get('/campaigns/create', 'CampaignsController@create')->name('createcampaign');
 Route::get('/campaigns/view/{id}', 'CampaignsController@show')->name('viewcampaign');
+Route::get('/campaigns/sendemail', 'CampaignsController@sendMassMailPage')->name('sendemailview');
+Route::post('/campaigns/sendemail', 'CampaignsController@sendAutomaticallMassMail')->name('sendmassemail');
 Route::post('/campaigns/store', 'CampaignsController@store')->name('savecampaign');
 
 /* Contacts lists routes */
