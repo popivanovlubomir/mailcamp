@@ -16,13 +16,13 @@
         <div class="form-group row">
             <label for="plain_content" class="col-sm-2 col-form-label col-form-label-lg">Body plain text</label>
             <div class="col-sm-10">
-                <textarea name="plain_content" placeholder="The plain text content of your emails." cols="90" rows="20" value="{{ old('plain_content') }}" ></textarea>
+                <textarea name="plain_content" placeholder="The plain text content of your emails." cols="90" rows="20" >{{ old('plain_content') }}</textarea>
             </div>
         </div>
         <div class="form-group row">
             <label for="html_content" class="col-sm-2 col-form-label col-form-label-lg">Body html</label>
             <div class="col-sm-10">
-                <textarea class="richtext" name="html_content" placeholder="The HTML of your marketing email"cols="90" rows="20" value="{{ old('html_content') }}" ></textarea>
+                <textarea class="richtext" name="html_content" placeholder="The HTML of your marketing email"cols="90" rows="20" >{{ old('html_content') }}</textarea>
             </div>
         </div>
         @if($contacts_list)
