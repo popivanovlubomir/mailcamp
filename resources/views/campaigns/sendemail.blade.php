@@ -16,13 +16,13 @@
         <div class="form-group row">
             <label for="plain_content" class="col-sm-2 col-form-label col-form-label-lg">Body plain text</label>
             <div class="col-sm-10">
-                <input type="text" name="plain_content" placeholder="The plain text of your email" class="form-control" value="{{ old('plain_content') }}" required>
+                <textarea name="plain_content" placeholder="The plain text of your email" value="{{ old('plain_content') }}" cols="90" rows="20"></textarea>
             </div>
         </div>
         <div class="form-group row">
             <label for="html_content" class="col-sm-2 col-form-label col-form-label-lg">Body html</label>
             <div class="col-sm-10">
-                <textarea name="html_content" placeholder="The plain text content of your emails." value="{{ old('html_content') }}" cols="90" rows="20" required></textarea>
+                <textarea class="richtext" name="html_content" placeholder="The plain text content of your emails." value="{{ old('html_content') }}" cols="90" rows="20"></textarea>
             </div>
         </div>
         <div class="form-group row">

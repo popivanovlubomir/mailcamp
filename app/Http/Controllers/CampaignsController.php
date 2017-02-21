@@ -58,7 +58,19 @@ class CampaignsController extends ApiController
     public function store(Request $request)
     {
         $data = $request->except('_token');
+
+        $this->validate($request, [
+            'title' => 'required',
+            'subject' => 'required',
+            'html_content' => 'required|has_unsubscribe_tag',
+            'plain_content' => 'required|has_unsubscribe_tag',
+            'contact_lists_ids' => 'required',
+            'sender_id' => 'required',
+            'suppression_group_id' => 'required',
+        ]);
+
         $response = $this->storeCampaign($data);
+
         if(isset($response['errors'])) {
             return Redirect::to('/campaigns/create')->withErrors($response['errors'])->withInput();
         } else {
