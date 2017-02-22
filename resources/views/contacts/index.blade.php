@@ -41,21 +41,33 @@
 
             <!-- Modal content-->
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Import contacts from CSV</h4>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="{{ route('savecampaign') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('importcontacts', $list_id) }}" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Import contacts from CSV</h4>
+                    </div>
+                    <div class="modal-body">
 
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
+                            <div class="form-group row">
+                                <label class="custom-file">
+                                    <input type="file" name="contacts_lits" class="custom-file-input">
+                                    <span class="custom-file-control"></span>
+                                </label>
+                            </div>
+
+                            {{ csrf_field() }}
+                            @include('includes.errors')
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" value="{{ $list_id }}" name="list_id">
+                        <input type="submit" value="Submit" class="btn btn-success">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
             </div>
 
         </div>
     </div>
-
+    @include('includes.errors')
 @endsection

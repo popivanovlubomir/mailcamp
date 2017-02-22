@@ -170,6 +170,9 @@ class CampaignsController extends ApiController
                 return back()->withInput(Input::all())->withErrors($recipients_response['errors']);
             }
 
+            //get total sent recipients
+            $total_recipients_send = count($recipients_list);
+
             // @todo make it with queue service
             //it takes time the API to store the contacts
             do {
@@ -177,7 +180,6 @@ class CampaignsController extends ApiController
                 $criteria['created_at'] = time();
                 $recipients_data = $this->searchContacts($criteria);
                 $total_recipients_data = count($recipients_data['body']->recipients);
-                $total_recipients_send = count($recipients_list);
                 //wait for 5 secs
                 sleep(5);
             } while ($total_recipients_send != $total_recipients_data);
