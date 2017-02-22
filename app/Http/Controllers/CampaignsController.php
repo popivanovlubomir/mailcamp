@@ -64,7 +64,7 @@ class CampaignsController extends ApiController
             'subject' => 'required',
             'html_content' => 'required|has_unsubscribe_tag',
             'plain_content' => 'required|has_unsubscribe_tag',
-            'contact_lists_ids' => 'required',
+            'list_ids' => 'required',
             'sender_id' => 'required',
             'suppression_group_id' => 'required',
         ]);
@@ -72,9 +72,11 @@ class CampaignsController extends ApiController
         $response = $this->storeCampaign($data);
 
         if(isset($response['errors'])) {
-            return Redirect::to('/campaigns/create')->withErrors($response['errors'])->withInput();
+
+            return back()->withInput()->withErrors($response['errors']);
+
         } else {
-            return Redirect::to('/campaigns');
+            return Redirect::to('/campaigns')->with('status', 'Campaign was successfully created!');
         }
 
     }
@@ -219,7 +221,7 @@ class CampaignsController extends ApiController
 
                 $response = $this->sendCampaign($response['body']->id, $request_body);
 
-                return Redirect::to('/campaigns')->with('status', 'Campaign was successfully sheduled!');
+                return Redirect::to('/campaigns')->with('status', 'Campaign was successfully created!');
             }
 
 

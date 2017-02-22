@@ -27,11 +27,11 @@
         </div>
         @if($contacts_list)
             <div class="form-group row">
-                <label for="contact_lists_ids" class="col-sm-2 col-form-label col-form-label-lg">Associate contacts list</label>
+                <label for="list_ids" class="col-sm-2 col-form-label col-form-label-lg">Associate contacts list</label>
                 <div class="col-sm-10">
-                    <select multiple class="form-control" name="contact_lists_ids[]" required>
+                    <select multiple class="form-control" name="list_ids[]" required>
                     @foreach($contacts_list as $list)
-                        <option value="{{ $list->id }}" @if (!empty(old('contact_lists_ids')) && in_array($list->id, old('contact_lists_ids'))) selected @endif>
+                        <option value="{{ $list->id }}" @if (!empty(old('list_ids')) && in_array($list->id, old('list_ids'))) selected @endif>
                             {{ $list->name }} ({{ $list->recipient_count }})
                         </option>
                     @endforeach

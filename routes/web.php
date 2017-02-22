@@ -31,5 +31,6 @@ Route::post('/contactslist/remove', 'ContactsListsController@destroy')->name('re
 Route::get('/contactslist/{list_id}/contacts', 'ContactsController@index')->name('viewcontacts');
 Route::get('/contactslist/{list_id}/contacts/create', 'ContactsController@create')->name('createcontact');
 Route::post('/contactslist/{list_id}/contacts/store', 'ContactsController@store')->name('savecontact');
+Route::post('/contactslist/{list_id}/contacts/import', 'ContactsController@importCSV')->name('importcontacts');
 
 Route::get('/test', 'TestController@index');

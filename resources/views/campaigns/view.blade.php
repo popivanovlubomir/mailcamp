@@ -30,7 +30,7 @@
             <h3>Plain Content</h3>
         </div>
         <div class="col-sm-5">
-            <textarea cols="70">{{ $campaign_data->plain_content }}</textarea>
+            <textarea cols="70" rows="10" disabled>{{ $campaign_data->plain_content }}</textarea>
         </div>
     </div>
     <div class="row">
@@ -38,7 +38,7 @@
             <h3>HTML Content</h3>
         </div>
         <div class="col-sm-5">
-            <textarea cols="70">{{ $campaign_data->html_content }}</textarea>
+            <textarea cols="70" rows="10" disabled>{{ $campaign_data->html_content }}</textarea>
         </div>
     </div>
     @if($sheduled_data->send_at)
