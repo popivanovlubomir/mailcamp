@@ -20,6 +20,10 @@ class CampaignsController extends ApiController
     {
         $campaigns = $this->getAllCampaigns();
 
+//        $tets = $this->getStats();
+
+//        dd($tets);
+
         return view('campaigns.index', compact('campaigns'));
     }
 
@@ -40,7 +44,7 @@ class CampaignsController extends ApiController
             $senders_data = $senders_data['body'];
         }
 
-        $suppression_groups = $this->getSuppressionsGroupsData([]);
+        $suppression_groups = $this->getSuppressionGroupsData([]);
 
         if(!isset($suppression_groups['errors'])) {
             $suppression_groups = $suppression_groups['body'];
@@ -62,12 +66,16 @@ class CampaignsController extends ApiController
         $this->validate($request, [
             'title' => 'required',
             'subject' => 'required',
+            'categories' => 'required',
             'html_content' => 'required|has_unsubscribe_tag',
             'plain_content' => 'required|has_unsubscribe_tag',
             'list_ids' => 'required',
             'sender_id' => 'required',
             'suppression_group_id' => 'required',
         ]);
+
+        //set the categories of the campaign
+        $data['categories'] = array_map("trim", explode(",", $request->get('categories')));
 
         $response = $this->storeCampaign($data);
 
@@ -76,9 +84,57 @@ class CampaignsController extends ApiController
             return back()->withInput()->withErrors($response['errors']);
 
         } else {
+
             return Redirect::to('/campaigns')->with('status', 'Campaign was successfully created!');
         }
 
+    }
+
+    /**
+     *
+     * Function to test campaign
+     *
+     * @param Request $request
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
+    public function testCampaign(Request $request) {
+
+        $this->validate($request, [
+            'email' => 'required|email',
+            'campaign_id' => 'required|int'
+        ]);
+
+        //send test campaign message
+        $response_test_campaign = $this->sendTestCampaign($request->get('campaign_id'), ['to' => $request->get('email')]);
+
+        if(isset($response_test_campaign['errors'])) {
+            return back()->withInput()->withErrors($response_test_campaign['errors']);
+        }
+
+        return  back()->with('status', 'Test email was successfully sent!');
+    }
+
+    /**
+     *
+     * Send Campaign
+     *
+     * @param Request $request
+     * @return $this
+     */
+    public function sendCampaign(Request $request)
+    {
+
+        $this->validate($request, [
+            'campaign_id' => 'required|int'
+        ]);
+
+        $response = $this->sendImmediatelyCampaign($request->get('campaign_id'));
+
+        if(isset($response['errors'])) {
+            return back()->withInput()->withErrors($response['errors']);
+        }
+
+        return Redirect::to('/campaigns')->with('status', 'Campaign was successfully sent!');
     }
 
     /**
@@ -170,33 +226,8 @@ class CampaignsController extends ApiController
                 return back()->withInput(Input::all())->withErrors($recipients_response['errors']);
             }
 
-            //get total sent recipients
-            $total_recipients_send = count($recipients_list);
-
-            // @todo make it with queue service
-            //it takes time the API to store the contacts
-            do {
-                //get all last stored contacts
-                $criteria['created_at'] = time();
-                $recipients_data = $this->searchContacts($criteria);
-                $total_recipients_data = count($recipients_data['body']->recipients);
-                //wait for 5 secs
-                sleep(5);
-            } while ($total_recipients_send != $total_recipients_data);
-
-            //loop all last contacts and generated formatted array with ids
-            $iterator = new \ArrayIterator($recipients_data['body']->recipients);
-            foreach ($iterator as $key => $value) {
-                $lists_recipients[] = $value->id;
-            }
-
             //add contacts to the list
-            $response = $this->associateContactsToList($new_contacts_lists_data['body']->id, $lists_recipients);
-
-            //if there are errors with storing contacts redirect to the page
-            if(isset($recipients_response['errors'])) {
-                return back()->withInput(Input::all())->withErrors($recipients_response['errors']);
-            }
+            $response = $this->associateContactsToList($new_contacts_lists_data['body']->id, $recipients_response['body']->persisted_recipients);
 
             //if association was successful
             //create the campaign
@@ -207,8 +238,8 @@ class CampaignsController extends ApiController
                 'plain_content' => $request->get('plain_content'),
                 'html_content' => $request->get('html_content'),
                 'list_ids' => [$new_contacts_lists_data['body']->id],
-                'sender_id' => 109496, // @todo make automatically
-                'suppression_group_id' => 2129 // @todo make automatically
+                'sender_id' => 109166, // @todo make automatically
+                'suppression_group_id' => 1975 // @todo make automatically
             ];
 
             //make the request

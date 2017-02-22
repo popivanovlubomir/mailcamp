@@ -78,7 +78,7 @@ class ContactsController extends ApiController
 
     public function importCSV(Request $request) {
 
-        $request_data = $recipients_list = $response = $list_response = [];
+        $segment_data = $request_data = $recipients_list = $response = $list_response = [];
 
 
         $this->validate($request, [
@@ -104,6 +104,7 @@ class ContactsController extends ApiController
 
             // loop through the object and generate formatted list
             foreach ($iterator as $key => $value) {
+                if($key > 1800) break;
                 $recipients_list[] = [
                     'email' => $value[0],
                     'first_name' => $value[1],
@@ -120,20 +121,18 @@ class ContactsController extends ApiController
             }
 
             //get total sent recipients
-            $total_recipients_send = count($recipients_list);
+//            $total_recipients_send = count($recipients_list);
+//            $total_recipients_stored = count($recipients_response['body']->persisted_recipients);
 
-            // @todo make it with queue service
-            //it takes time the API to store the contacts
-            do {
-                //get all last stored contacts
-                $criteria['created_at'] = time();
-                $recipients_data = $this->searchContacts($criteria);
-                $total_recipients_data = count($recipients_data['body']->recipients);
-                //wait for 5 secs
-                sleep(5);
-            } while ($total_recipients_send != $total_recipients_data);
+            //add contacts to the list
+            $assoc_response = $this->associateContactsToList($request->get('list_id'), $recipients_response['body']->persisted_recipients);
 
-            dd($recipients_data['body']->recipients);
+            //if there are errors with storing contacts redirect to the page
+            if(isset($assoc_response['errors'])) {
+                return back()->withInput(Input::all())->withErrors($recipients_response['errors']);
+            }
+
+            return Redirect::to('/contactslist')->with('status', 'Contacts was successfully imported! This can take several minutes depending on how many contacts you were storing.');
 
         }
     }

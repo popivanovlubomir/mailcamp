@@ -115,18 +115,16 @@ class ApiController extends Controller
 
     /**
      *
-     *
      * Function to send campaign now
      *
      * @param $campaign_id
-     * @param $request_data
      * @return array
      */
-    public function sendCampaign($campaign_id, $request_data)
+    public function sendImmediatelyCampaign($campaign_id)
     {
         $response_obj = $response = [];
 
-        $response_obj = $this->request->client->campaigns()->_($campaign_id)->schedules()->now()->post($request_data);
+        $response_obj = $this->request->client->campaigns()->_($campaign_id)->schedules()->now()->post();
         $response = $this->formatResponse($response_obj);
 
         return $response;
@@ -278,6 +276,25 @@ class ApiController extends Controller
 
     }
 
+    /**
+     *
+     * Store custom field. Can be used in contacts profiles data
+     *
+     * @param $request_data
+     * @return array
+     */
+    public function storeCustomField($request_data)
+    {
+        $response_obj = $response = [];
+
+        $request_data = json_decode(json_encode($request_data));
+
+        $response_obj = $this->request->client->contactdb()->custom_fields()->post($request_data);
+
+        $response = $this->formatResponse($response_obj);
+
+        return $response;
+    }
 
     /**
      *
@@ -317,13 +334,74 @@ class ApiController extends Controller
         return $response;
     }
 
-    public function getSuppressionsGroupsData($request_data)
+    /**
+     *
+     * Function to retrieve single sender identity
+     *
+     * @param $sender_id
+     * @return array
+     */
+    public function getSenderIdentity($sender_id)
+    {
+        $response_obj = $response = [];
+
+        $response_obj = $this->request->client->senders()->_($sender_id)->get();
+
+        $response = $this->formatResponse($response_obj);
+
+        return $response;
+    }
+
+    /**
+     *
+     * Get all suppressions groups data
+     *
+     * @param $request_data
+     * @return array
+     */
+    public function getSuppressionGroupsData($request_data)
     {
         $response_obj = $response = [];
 
         $request_data = json_decode(json_encode($request_data));
 
         $response_obj = $this->request->client->asm()->groups()->get(null ,$request_data);
+
+        $response = $this->formatResponse($response_obj);
+
+        return $response;
+    }
+
+    /**
+     *
+     * Function to store suppression group
+     *
+     * @param $request_data
+     * @return array
+     */
+    public function storeSuppressionGroup($request_data)
+    {
+        $response_obj = $response = [];
+
+        $request_data = json_decode(json_encode($request_data));
+
+        $response_obj = $this->request->client->asm()->groups()->post($request_data);
+
+        $response = $this->formatResponse($response_obj);
+
+        return $response;
+    }
+
+
+
+    public function getStats()
+    {
+        $response_obj = $response = [];
+
+
+        $query_params = json_decode('{"aggregated_by": "day", "categories": "category 1", "start_date": "2017-02-20"}');
+
+        $response_obj = $this->request->client->categories()->stats()->get(null, $query_params);
 
         $response = $this->formatResponse($response_obj);
 
@@ -464,6 +542,8 @@ class ApiController extends Controller
 
 
     }
+
+
 
     /**
      *

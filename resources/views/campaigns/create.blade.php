@@ -14,6 +14,12 @@
             </div>
         </div>
         <div class="form-group row">
+            <label for="categories" class="col-sm-2 col-form-label col-form-label-lg" >Campaign Categories</label>
+            <div class="col-sm-10">
+                <input class="form-control form-control-lg" type="text" name="categories" value="{{ old('categories') }}" placeholder="Comma separated categories of the campaign. Used to track statistics of the campaign" required>
+            </div>
+        </div>
+        <div class="form-group row">
             <label for="plain_content" class="col-sm-2 col-form-label col-form-label-lg">Body plain text</label>
             <div class="col-sm-10">
                 <textarea name="plain_content" placeholder="The plain text content of your emails." cols="90" rows="20" >{{ old('plain_content') }}</textarea>
