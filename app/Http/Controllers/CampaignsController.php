@@ -20,10 +20,6 @@ class CampaignsController extends ApiController
     {
         $campaigns = $this->getAllCampaigns();
 
-//        $tets = $this->getStats();
-
-//        dd($tets);
-
         return view('campaigns.index', compact('campaigns'));
     }
 
